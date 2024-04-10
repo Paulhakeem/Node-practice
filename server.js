@@ -4,6 +4,7 @@ const fs = require("fs");
 const url = require("url");
 
 // user define module
+const humanDetails = require("./modules/replaceHTML");
 
 // third part modules
 
@@ -12,17 +13,6 @@ let human = JSON.parse(fs.readFileSync("./peoples.json", "utf-8"));
 let htmlFile = fs.readFileSync("./paul.html", "utf-8");
 let humanData = fs.readFileSync("./rael.html", "utf-8");
 
-// useble function
-const humanDetails = (template, peoples) => {
-  let output = template.replace("{{%NAME%}}", peoples.name);
-  output = output.replace("{{%LOCATION%}}", peoples.location);
-  output = output.replace("{{%RULE%}}", peoples.Rule);
-  output = output.replace("{{%ID%}}", peoples.id);
-  output = output.replace("{{%IMAGE}}", peoples.image);
-  output = output.replace("{{%ABOUT%}}", peoples.about);
-
-  return output;
-};
 // server
 const server = http.createServer((req, res) => {
   let { query, pathname: path } = url.parse(req.url, true);
@@ -31,7 +21,7 @@ const server = http.createServer((req, res) => {
       let peoples = human.map((person) => {
         return humanDetails(htmlFile, person);
       });
-      res.writeHead(200, { "Content-Type": "text/html" })
+      res.writeHead(200, { "Content-Type": "text/html" });
       res.end(peoples.join(","));
     } else {
       let data = human[query.id];
