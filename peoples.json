@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "name": "paul",
+        "location": "mombasa",
+        "Rule": "front-end developer",
+        "about": "The built-in watch option allows automatically rerunning the fetcher function when any changes are detected",
+        "image": "https://img.freepik.com/free-photo/portrait-confident-dark-skinned-woman-enterpreneur-with-serious-look-wears-round-glasses-red-blouse-going-meet-with-partners-from-abroad-prepares-presenting-company-isolated-white_273609-3653.jpg?t=st=1712697966~exp=1712701566~hmac=cf1ffdc312f3f614a763a83983113669af64a6a797e5f7b8e99e70c904b66d8d&w=826"
+    },
+    {
+        "id": 2,
+        "name": "Munki",
+        "location": "Maungu",
+        "Rule": "Engineer",
+        "about": "High-quality photos, videos, vectors, PSD, AI images, icons... to go from ideas to outstanding designs",
+        "image": "https://img.freepik.com/free-photo/african-teenage-girl-portrait-happy-smiling-face_53876-146757.jpg?t=st=1712697921~exp=1712701521~hmac=e3b1a1f11656f1d2e12f395ba5c40d8d843dfe6e3a40b6678ab5351d10edb273&w=740"
+    },
+    {
+        "id": 3,
+        "name": "Marbel",
+        "location": "Voi",
+        "Rule": "Tour guard",
+        "about": "useAsyncData provides access to data that resolves asynchronously in a SSR-friendly composable.",
+        "image": "https://img.freepik.com/free-photo/worldface-ugandan-man-white-background_53876-30388.jpg?t=st=1712697735~exp=1712701335~hmac=be6676bb881e0d66ebeebfed710502798719d76849b3c47acbd36010e67c85e8&w=826"
+    },
+    {
+        "id": 4,
+        "name": "Cate",
+        "location": "Mariakani",
+        "Rule": "Business woman",
+        "about": "Within your pages, components, and plugins you can use useAsyncData to get access to data that resolves asynchronously.",
+        "image": "https://img.freepik.com/free-photo/portrait-expressive-young-man-wearing-formal-suit_273609-6943.jpg?t=st=1712697822~exp=1712701422~hmac=cb0029be58983e474f2a198e30bfbbaed9060129eef8d0dba8881bb9b6010c2f&w=826"
+    }
+]
