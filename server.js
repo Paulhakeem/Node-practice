@@ -14,14 +14,16 @@ let htmlFile = fs.readFileSync("./paul.html", "utf-8");
 let humanData = fs.readFileSync("./rael.html", "utf-8");
 
 // server
-const server = http.createServer((req, res) => {
+const server = http.createServer()
+// event listener
+server.on("request", (req, res)=> {
   let { query, pathname: path } = url.parse(req.url, true);
   if (path === "/" || path === "/home") {
     if (!query.id) {
       let peoples = human.map((person) => {
         return humanDetails(htmlFile, person);
       });
-      res.writeHead(200, { "Content-Type": "text/html" });
+      res.writeHead(200, { "Content-Type": "text/html" })
       res.end(peoples.join(","));
     } else {
       let data = human[query.id];
@@ -29,7 +31,8 @@ const server = http.createServer((req, res) => {
       res.end(replaceHTML);
     }
   }
-});
+})
+
 server.listen(8080, () => {
   console.log("Server is listen on port 8080....");
 });
