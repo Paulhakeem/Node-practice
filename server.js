@@ -14,6 +14,21 @@ app.get("/api/v1/movies", (req, res) => {
   });
 });
 
+// Get Route
+app.get("/api/v1/movies/:id", (req, res) => {
+  // convert ID into number type
+  const id = req.params.id * 1;
+  // find the ID of a movie
+  let movie = movies.find((el) => el.id === id);
+  console.log(movie);
+  res.status(200).json({
+    status: "success",
+    data: {
+      movie: movie
+    },
+  });
+});
+
 // POST request
 app.use(express.json());
 app.post("/api/v1/movies", (req, res) => {
