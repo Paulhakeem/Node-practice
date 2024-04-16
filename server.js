@@ -20,11 +20,10 @@ app.get("/api/v1/movies/:id", (req, res) => {
   const id = req.params.id * 1;
   // find the ID of a movie
   let movie = movies.find((el) => el.id === id);
-  console.log(movie);
   res.status(200).json({
     status: "success",
     data: {
-      movie: movie
+      movie: movie,
     },
   });
 });
