@@ -1,45 +1,41 @@
 const express = require("express");
 const fs = require("fs");
 let app = express();
-
+app.use(express.json());
 let movies = JSON.parse(fs.readFileSync("./express/movies.json"));
 
-// Get request
-app.get("/api/v1/movies", (req, res) => {
+// Route functions(refactor my code)
+const getAllMovies = (req, res) => {
   res.status(200).json({
     status: "success",
     data: {
       movies: movies,
     },
   });
-});
+};
 
-// Get Route
-app.get("/api/v1/movies/:id", (req, res) => {
+const getMovie = (req, res) => {
   // convert ID into number type
   const id = req.params.id * 1;
   // find the ID of a movie
   let movie = movies.find((el) => el.id === id);
-  if(movie) {
-   return res.status(200 ).json({
-        status: "success",
-        data: {
-          movie: movie,
-        },
-      });
+  if (movie) {
+    return res.status(201).json({
+      status: "success",
+      data: {
+        movie: movie,
+      },
+    });
   }
   res.status(404).json({
     status: "fail",
     data: {
-    text: `Movie with ${id} not found`
-    }
-  })
- 
-});
+      text: `Movie with ${id} not found`,
+    },
+  });
+};
 
-// POST request
-app.use(express.json());
-app.post("/api/v1/movies", (req, res) => {
+const createMovie = (req, res) => {
   // creating an ID for a new object
   const newID = movies[movies.length - 1].id + 1;
   // creating a new object
@@ -55,29 +51,76 @@ app.post("/api/v1/movies", (req, res) => {
       },
     });
   });
-});
+};
 
-// patch method = update data
-app.patch("/api/v1/movies/:id", (req, res) => {
- const id = req.params.id * 1
-// find the movie ID
- const updateMovie = movies.find((el) => el.id === id)
-//  find the index of updated movie
-const movieIndex = movies.indexOf(updateMovie)
-// replace movie with the updated one
-movies[movieIndex] = updateMovie
-// creating an object
-Object.assign(updateMovie, req.body)
-// writing file
-fs.writeFile("./express/movies.json", JSON.stringify(movies), (err) => {
+const updateMovie = (req, res) => {
+  const id = req.params.id * 1;
+  // find the movie ID
+  const updateMovie = movies.find((el) => el.id === id);
+  //   check if the movie with ID exist
+  if (!updateMovie) {
+    res.status(404).json({
+      status: "failed",
+      data: {
+        text: `Movie with ${id} not found`,
+      },
+    });
+  }
+  //  find the index of updated movie
+  const movieIndex = movies.indexOf(updateMovie);
+
+  // replace movie with the updated one
+  movies[movieIndex] = updateMovie;
+  // creating an object
+  Object.assign(updateMovie, req.body);
+  // writing file
+  fs.writeFile("./express/movies.json", JSON.stringify(movies), (err) => {
     res.status(200).json({
-        status: "sucess",
-        data: {
-          movies: updateMovie
-        },
-      });
-})
-})
+      status: "sucess",
+      data: {
+        movies: updateMovie,
+      },
+    });
+  });
+};
+
+const deleteMovie = (req, res) => {
+  const id = req.params.id * 1;
+  const deleteMovie = movies.find((el) => el.id === id);
+  if (!deleteMovie) {
+    res.status(404).json({
+      status: "failed",
+      data: {
+        text: `Movie object with ID of ${id} not found`,
+      },
+    });
+  }
+  const index = movies.indexOf(deleteMovie);
+  movies.splice(index, 1);
+  fs.writeFile("./express/movies.json", JSON.stringify(movies), (err) => {
+    res.status(204).json({
+      status: "Deleted",
+      data: {
+        movies: null,
+      },
+    });
+  });
+};
+// Get request
+app.get("/api/v1/movies", getAllMovies);
+
+// Get Route
+app.get("/api/v1/movies/:id", getMovie);
+
+// POST request
+
+app.post("/api/v1/movies", createMovie);
+
+// PATCH: method = update data
+app.patch("/api/v1/movies/:id", updateMovie);
+
+// DELETE: request
+app.delete("/api/v1/movies/:id", deleteMovie);
 
 app.listen(8080, () => {
   console.log("Server in running");
