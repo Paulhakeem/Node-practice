@@ -7,6 +7,19 @@ exports.checkID = (req, res, next, value) => {
 console.log(`movie ID = ${value}`);
 next()
 }
+
+exports.validateMovie = (req, res, next) => {
+    if(!req.body.name || !req.body.date) {
+        res.status(400).json({
+            status: "fail",
+            data: {
+                message: "Not a valid movie something is messing"
+            }
+        })
+    }
+    next()
+}
+// GET METHOD
 exports.getAllMovies = (req, res) => {
   res.status(200).json({
     status: "success",
@@ -16,6 +29,7 @@ exports.getAllMovies = (req, res) => {
   });
 };
 
+// GET METHOD
 exports.getMovie = (req, res) => {
   // convert ID into number type
   const id = req.params.id * 1;
@@ -37,6 +51,7 @@ exports.getMovie = (req, res) => {
   });
 };
 
+// POST METHOD
 exports.createMovie = (req, res) => {
   // creating an ID for a new object
   const newID = movies[movies.length - 1].id + 1;
@@ -55,6 +70,7 @@ exports.createMovie = (req, res) => {
   });
 };
 
+// PATCH METHOD
 exports.updateMovie = (req, res) => {
   const id = req.params.id * 1;
   // find the movie ID
@@ -86,6 +102,7 @@ exports.updateMovie = (req, res) => {
   });
 };
 
+// DeleTe method
 exports.deleteMovie = (req, res) => {
   const id = req.params.id * 1;
   const deleteMovie = movies.find((el) => el.id === id);
