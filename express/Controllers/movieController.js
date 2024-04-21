@@ -3,6 +3,10 @@ const fs = require('fs')
 let movies = JSON.parse(fs.readFileSync("./express/movies.json"));
 
 // Route functions(refactor my code)
+exports.checkID = (req, res, next, value) => {
+console.log(`movie ID = ${value}`);
+next()
+}
 exports.getAllMovies = (req, res) => {
   res.status(200).json({
     status: "success",
