@@ -4,8 +4,13 @@ const Movie = require("./../../model/movies");
 // GET METHOD
 exports.getAllMovies = async (req, res) => {
   try {
-    
-    let movie = await Movie.find(req.query);
+    // sort using grater and less than
+    let queryStr = JSON.stringify(req.query);
+    queryStr = queryStr.replace(/\bgte|gt|lte|lt\b/g, (match) => `$${match}`);
+    const queryObj = JSON.parse(queryStr);
+    console.log(queryObj);
+    // end of sorting
+    let movie = await Movie.find(queryObj);
     res.status(200).json({
       status: "sucess",
       length: movie.length,
