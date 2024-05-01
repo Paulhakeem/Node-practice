@@ -4,13 +4,23 @@ const Movie = require("./../../model/movies");
 // GET METHOD
 exports.getAllMovies = async (req, res) => {
   try {
-    // sort using grater and less than
+    // filtering using grater and less than
     let queryStr = JSON.stringify(req.query);
     queryStr = queryStr.replace(/\bgte|gt|lte|lt\b/g, (match) => `$${match}`);
     const queryObj = JSON.parse(queryStr);
     console.log(queryObj);
-    // end of sorting
+    // end of filtering
     let movie = await Movie.find(queryObj);
+    // sort
+    // if (req.query.sort) {
+    //   const sortBy = req.query.sort.split(",");
+    //   movie = movie.sort(sortBy);
+    // }else{
+    //   movie = movie.sort(queryObj);
+    // }
+
+   
+
     res.status(200).json({
       status: "sucess",
       length: movie.length,
