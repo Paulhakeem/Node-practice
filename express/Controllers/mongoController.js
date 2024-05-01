@@ -4,7 +4,8 @@ const Movie = require("./../../model/movies");
 // GET METHOD
 exports.getAllMovies = async (req, res) => {
   try {
-    let movie = await Movie.find();
+    
+    let movie = await Movie.find(req.query);
     res.status(200).json({
       status: "sucess",
       length: movie.length,
