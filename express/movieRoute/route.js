@@ -1,5 +1,5 @@
 const express = require("express");
-const movieContollers = require("./../Controllers/movieController");
+const mongoContollers = require("./../Controllers/mongoController");
 
 const router = express.Router();
 
@@ -7,13 +7,13 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(movieContollers.getAllMovies)
-  .post(movieContollers.validateMovie, movieContollers.createMovie);
+  .get(mongoContollers.getAllMovies)
+  .post(mongoContollers.createMovie);
 
 router
   .route("/:id")
-  .get(movieContollers.getMovie)
-  .patch(movieContollers.updateMovie)
-  .delete(movieContollers.deleteMovie);
+  .get(mongoContollers.getMovie)
+  .patch(mongoContollers.updateMovie)
+  .delete(mongoContollers.deleteMovie);
 
 module.exports = router;

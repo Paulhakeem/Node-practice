@@ -21,16 +21,8 @@ mongoose
     console.log("error");
   });
 
-//   creating a schema
-const movieSchema = new mongoose.Schema({
-    name: {type: String, required: [true, "Name required"]},
-    descrption: String,
-    duration: {type: Number, required: [true, "Duration requred"]},
-    rating: {type: Number, default: 1.0}
-})
-// creating a model
-const movie = mongoose.model('movie', movieSchema)
 
+// save to database
 
 
 app.use("/api/v1/movies", movieRouter); // CREATING route
