@@ -10,14 +10,22 @@ exports.getAllMovies = async (req, res) => {
     const queryObj = JSON.parse(queryStr);
     console.log(queryObj);
     // end of filtering
-    let movie = await Movie.find(queryObj);
+    let movie = Movie.find(queryObj);
     // sort
-    // if (req.query.sort) {
-    //   const sortBy = req.query.sort.split(",");
-    //   movie = movie.sort(sortBy);
-    // }else{
-    //   movie = movie.sort(queryObj);
-    // }
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(' ');
+      movie = movie.sort(sortBy);
+    }else{
+      movie = movie.sort(queryObj);
+    }
+
+    // fields
+    if (req.query.fields) {
+      const queryFields = req.query.fields.split(",").join(' ');
+      movie.select(queryFields );
+    }else{
+      movie = movie.select(queryObj);
+    }
 
    
 
