@@ -10,24 +10,23 @@ exports.getAllMovies = async (req, res) => {
     const queryObj = JSON.parse(queryStr);
     console.log(queryObj);
     // end of filtering
-    let movie = Movie.find(queryObj);
-    // sort
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(' ');
-      movie = movie.sort(sortBy);
-    }else{
-      movie = movie.sort(queryObj);
+    let query = Movie.find(queryObj);
+
+    // PAGENATIONS
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 2;
+    // Page 1: 1-10, Page 2: 11-20
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const movieCount = await Movie.countDocuments();
+      if (skip >= movieCount) {
+        throw new Error("Page Not Found");
+      }
     }
 
-    // fields
-    if (req.query.fields) {
-      const queryFields = req.query.fields.split(",").join(' ');
-      movie.select(queryFields );
-    }else{
-      movie = movie.select(queryObj);
-    }
-
-   
+    const movie = await query;
 
     res.status(200).json({
       status: "sucess",
@@ -127,3 +126,21 @@ exports.deleteMovie = async (req, res) => {
     });
   }
 };
+
+// SORT
+// if (req.query.sort) {
+//   const sortBy = req.query.sort.split(",").join(' ');
+//   movie = movie.sort(sortBy);
+// }else{
+//   movie = movie.sort(queryObj);
+// }
+
+// FIELDS
+//   if (req.query.fields) {
+//     const queryFields = req.query.fields.split(",").join(' ');
+//     movie.select(queryFields );
+//   }else{
+//     movie = movie.select(queryObj)
+//   }
+
+//  const movies = await movie
