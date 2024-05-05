@@ -4,6 +4,10 @@ const mongoContollers = require("./../Controllers/mongoController");
 const router = express.Router();
 
 // router.param('id', movieContollers.checkID)
+// Middleware route
+router
+  .route("/high-rated-movies")
+  .get(mongoContollers.highRatedMovies, mongoContollers.getAllMovies);
 
 router
   .route("/")

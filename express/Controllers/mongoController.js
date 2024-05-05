@@ -1,32 +1,25 @@
-const router = require("../movieRoute/route");
+// const router = require("../movieRoute/route");
 const Movie = require("./../../model/movies");
+const queryFeatures = require("./../../utils/queryFeatures");
 
 // GET METHOD
+
+exports.highRatedMovies = (req, res, next) => {
+  // MIDDLEWARE
+  req.query.limit = "5";
+  req.query.rating = "-rating";
+
+  next();
+};
+
 exports.getAllMovies = async (req, res) => {
   try {
-    // filtering using grater and less than
-    let queryStr = JSON.stringify(req.query);
-    queryStr = queryStr.replace(/\bgte|gt|lte|lt\b/g, (match) => `$${match}`);
-    const queryObj = JSON.parse(queryStr);
-    console.log(queryObj);
-    // end of filtering
-    let query = Movie.find(queryObj);
+    const features = new queryFeatures(Movie.find(), req.query).filters()
+    .sort()
+    .limitFields()
+    .pagenation();
 
-    // PAGENATIONS
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 2;
-    // Page 1: 1-10, Page 2: 11-20
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.page) {
-      const movieCount = await Movie.countDocuments();
-      if (skip >= movieCount) {
-        throw new Error("Page Not Found");
-      }
-    }
-
-    const movie = await query;
+    const movie = await features.query;
 
     res.status(200).json({
       status: "sucess",
@@ -126,21 +119,3 @@ exports.deleteMovie = async (req, res) => {
     });
   }
 };
-
-// SORT
-// if (req.query.sort) {
-//   const sortBy = req.query.sort.split(",").join(' ');
-//   movie = movie.sort(sortBy);
-// }else{
-//   movie = movie.sort(queryObj);
-// }
-
-// FIELDS
-//   if (req.query.fields) {
-//     const queryFields = req.query.fields.split(",").join(' ');
-//     movie.select(queryFields );
-//   }else{
-//     movie = movie.select(queryObj)
-//   }
-
-//  const movies = await movie
