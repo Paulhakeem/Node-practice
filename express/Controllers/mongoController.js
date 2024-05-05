@@ -7,17 +7,18 @@ const queryFeatures = require("./../../utils/queryFeatures");
 exports.highRatedMovies = (req, res, next) => {
   // MIDDLEWARE
   req.query.limit = "5";
-  req.query.rating = "-rating";
+  req.query.rating = "rating";
 
   next();
 };
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const features = new queryFeatures(Movie.find(), req.query).filters()
-    .sort()
-    .limitFields()
-    .pagenation();
+    const features = new queryFeatures(Movie.find(), req.query)
+      .filters()
+      .sort()
+      .limitFields()
+      .pagenation();
 
     const movie = await features.query;
 
@@ -115,6 +116,44 @@ exports.deleteMovie = async (req, res) => {
       status: "fail",
       data: {
         message: error.message,
+      },
+    });
+  }
+};
+
+// aggrigation method for calculation using $match and &group
+exports.getAggrigates = async (req, res) => {
+  try {
+    const stats = await Movie.aggregate([
+      {
+        $match: { rating: { $gte: 5 } },
+      },
+      {
+        $group: {
+          _id: null,
+          minRating: {$min: '$rating'},
+          maxRating: {$max: '$rating'},
+          avrDuration: {$avg: '$duration'},
+          totalRating: {$sum: '$rating'},
+          totalStats: {$sum: 1}
+        }
+      },
+      {
+        $sort: {minRating: 1}
+      }
+    ]);
+    res.status(200).json({
+      status: "sucess",
+      length: stats.length,
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      data: {
+        message: "Something went wrong🤔",
       },
     });
   }

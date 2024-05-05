@@ -9,6 +9,9 @@ router
   .route("/high-rated-movies")
   .get(mongoContollers.highRatedMovies, mongoContollers.getAllMovies);
 
+  // aggrigation route
+  router.route("/movie-stats").get(mongoContollers.getAggrigates)
+
 router
   .route("/")
   .get(mongoContollers.getAllMovies)
