@@ -7,6 +7,7 @@ const movieSchema = new mongoose.Schema(
     descrption: String,
     duration: { type: Number, required: [true, "Duration requred"] },
     rating: { type: Number, default: 1.0 },
+    createdBy: String,
   },
   {
     toJSON: {virtuals:true},
@@ -17,6 +18,15 @@ const movieSchema = new mongoose.Schema(
 movieSchema.virtual("durationInHours").get(function(){
   return this.duration / 60;
 });
+// using Pre method as a middleware before save
+movieSchema.pre('save', function(next){
+  this.createdBy = "Hakeem Paul"
+  next()
+})
+// using of post method as a middleware after save
+movieSchema.post("save", (doc,next) => {
+
+})
 // creating a model/document
 const Movie = mongoose.model("Movie", movieSchema);
 
