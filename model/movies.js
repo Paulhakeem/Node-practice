@@ -41,6 +41,11 @@ movieSchema.pre(/^find/, function(next){
   this.find({rating: {$gte: 5}})
   next()
 })
+// Aggregation middleware
+movieSchema.pre('aggregate', function(next){
+  console.log(this.pipeline().unshift({$match: {rating: {$gte: 5}}}));
+  next()
+})
 // creating a model/document
 const Movie = mongoose.model("Movie", movieSchema);
 
