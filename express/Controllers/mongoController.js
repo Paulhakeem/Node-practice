@@ -14,13 +14,14 @@ exports.highRatedMovies = (req, res, next) => {
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const features = new queryFeatures(Movie.find(), req.query)
-      .filters()
-      .sort()
-      .limitFields()
-      .pagenation();
+    // const features = new queryFeatures(Movie.find(), req.query)
+    //   .filters()
+    //   .sort()
+    //   .limitFields()
+    //   .pagenation();
 
-    const movie = await features.query;
+    // const movie = await features.query;
+    const movie = await Movie.find()
 
     res.status(200).json({
       status: "sucess",

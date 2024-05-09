@@ -8,6 +8,10 @@ const movieSchema = new mongoose.Schema(
     descrption: String,
     duration: { type: Number, required: [true, "Duration requred"] },
     rating: { type: Number, default: 1.0 },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
     createdBy: String,
   },
   {
@@ -25,13 +29,18 @@ movieSchema.pre("save", function (next) {
   next();
 });
 // using of post method as a middleware after save
-movieSchema.post("save", function(doc, next){
-  const content = `A new movie document created with name ${doc.name} by ${doc.createdBy}`;
-  fs.writeFileSync('./marbel/logs/post.txt', content, { flag: 'a' }, (err) => {
-    console.log(err.message);
-  });
+// movieSchema.post("save", function (doc, next) {
+//   const content = `A new movie document created with name ${doc.name} by ${doc.createdBy}`;
+//   fs.writeFileSync("./marbel/logs/post.txt", content, { flag: "a" }, (err) => {
+//     console.log(err.message);
+//   });
+//   next();
+// });
+// CRATING A MIDDLEWARE BEFORE FINDING A MOVIE
+movieSchema.pre(/^find/, function(next){
+  this.find({rating: {$gte: 5}})
   next()
-});
+})
 // creating a model/document
 const Movie = mongoose.model("Movie", movieSchema);
 
