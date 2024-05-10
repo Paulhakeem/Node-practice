@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const fs = require("fs");
+const validator = require("validator");
 
 //   creating a schema
 const movieSchema = new mongoose.Schema(
@@ -11,8 +11,13 @@ const movieSchema = new mongoose.Schema(
       maxlength: [10, "movie length must be 10 or less"],
       minlength: [2, "movie length should be atleast 2 or more"],
     },
-    descrption: String,
-    duration: { type: Number, required: [true, "Duration requred"] },
+    descrption: {
+      type:String,
+      validate: [validator.isAlpha, 'description should only contains alphabets']
+    },
+    duration: {
+       type: Number, 
+       required: [true, "Duration requred"] },
     rating: {
       type: Number,
       default: 1.0,
