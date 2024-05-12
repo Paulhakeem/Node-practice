@@ -2,6 +2,7 @@
 const env = require("dotenv");
 const mongoose = require("mongoose");
 const movieRouter = require("./express/movieRoute/route"); // modules
+const ErrorHandling = require("./express/error/errorHanding")
 const morgan = require("morgan"); // modules
 const express = require("express");
 let app = express();
@@ -33,9 +34,9 @@ app.all("*", (req, res, next) => {
   //     message: `Cant find the URL ${req.originalUrl} on the server`,
   //   },
   // });
-  const err = new Error(`Cant find the URL ${req.originalUrl} on the server`)
-  err.status = "fail"
-  err.statusCode = 404
+  const err = new ErrorHandling(`Cant find the URL ${req.originalUrl} on the server`, 404)
+  // err.status = "fail"
+  // err.statusCode = 404
   next(err);
 });
 
