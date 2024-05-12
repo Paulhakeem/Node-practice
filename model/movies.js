@@ -70,7 +70,7 @@ movieSchema.pre("save", function (next) {
 // });
 // CRATING A MIDDLEWARE BEFORE FINDING A MOVIE
 movieSchema.pre(/^find/, function (next) {
-  this.find({ rating: { $gte: 5 } });
+  this.find({ rating: { $gt:  1} });
   next();
 });
 // Aggregation middleware

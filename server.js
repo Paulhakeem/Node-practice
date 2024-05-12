@@ -3,6 +3,7 @@ const env = require("dotenv");
 const mongoose = require("mongoose");
 const movieRouter = require("./express/movieRoute/route"); // modules
 const ErrorHandling = require("./express/error/errorHanding")
+const globalError = require("./express/error/errorController")
 const morgan = require("morgan"); // modules
 const express = require("express");
 let app = express();
@@ -41,14 +42,7 @@ app.all("*", (req, res, next) => {
 });
 
 // GLOBAL ERROR HANDLNG
-app.use((error, req, res, next) => {
-  error.statusCode = error.statusCode || 500
-  error.status = error.status || "error"
-  res.status(error.statusCode).json({
-    status: error.statusCode,
-    message: error.message
-  })
-})
+app.use(globalError)
 //   server
 app.listen(8080, () => {
   console.log("Server in running");
