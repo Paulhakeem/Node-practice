@@ -13,7 +13,7 @@ exports.highRatedMovies = (req, res, next) => {
   next();
 };
 
-exports.getAllMovies = asyncErrorHandling(async (req, res) => {
+exports.getAllMovies = asyncErrorHandling(async (req, res, next) => {
   // const features = new queryFeatures(Movie.find(), req.query)
   //   .filters()
   //   .sort()
@@ -33,7 +33,7 @@ exports.getAllMovies = asyncErrorHandling(async (req, res) => {
 });
 
 // GET METHOD
-exports.getMovie = asyncErrorHandling(async (req, res) => {
+exports.getMovie = asyncErrorHandling(async (req, res, next) => {
   let movie = await Movie.findById(req.params.id);
   res.status(200).json({
     status: "sucess",
@@ -44,7 +44,7 @@ exports.getMovie = asyncErrorHandling(async (req, res) => {
 });
 
 // POST METHOD
-exports.createMovie = asyncErrorHandling(async (req, res) => {
+exports.createMovie = asyncErrorHandling(async (req, res, next) => {
   // create document in mongodb
 
   let movie = await Movie.create(req.body);
@@ -57,7 +57,7 @@ exports.createMovie = asyncErrorHandling(async (req, res) => {
 });
 
 // PATCH METHOD
-exports.updateMovie = asyncErrorHandling(async (req, res) => {
+exports.updateMovie = asyncErrorHandling(async (req, res, next) => {
   let movieUpdate = await Movie.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -71,7 +71,7 @@ exports.updateMovie = asyncErrorHandling(async (req, res) => {
 });
 
 // DeleTe method
-exports.deleteMovie = asyncErrorHandling(async (req, res) => {
+exports.deleteMovie = asyncErrorHandling(async (req, res, next) => {
   await Movie.findByIdAndDelete(req.params.id);
   res.status(204).json({
     status: "sucess",
@@ -80,7 +80,7 @@ exports.deleteMovie = asyncErrorHandling(async (req, res) => {
 });
 
 // aggrigation method for calculation using $match and &group
-exports.getAggrigates = asyncErrorHandling(async (req, res) => {
+exports.getAggrigates = asyncErrorHandling(async (req, res, next) => {
   const stats = await Movie.aggregate([
     {
       $match: { rating: { $gte: 5 } },
