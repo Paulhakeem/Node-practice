@@ -21,11 +21,20 @@ mongoose
     console.log("error");
   });
 
-
 // save to database
 
-
+// ROUTERS
 app.use("/api/v1/movies", movieRouter); // CREATING route
+// ERROR HANDLING ROUTE
+app.all("*", (req, res, next) => {
+  res.status(404).json({
+    status: "fail",
+    data: {
+      message: `Cant find the URL ${req.originalUrl} on the server`,
+    },
+  });
+  next();
+});
 //   server
 app.listen(8080, () => {
   console.log("Server in running");
