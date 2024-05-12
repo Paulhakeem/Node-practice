@@ -27,14 +27,27 @@ mongoose
 app.use("/api/v1/movies", movieRouter); // CREATING route
 // ERROR HANDLING ROUTE
 app.all("*", (req, res, next) => {
-  res.status(404).json({
-    status: "fail",
-    data: {
-      message: `Cant find the URL ${req.originalUrl} on the server`,
-    },
-  });
-  next();
+  // res.status(404).json({
+  //   status: "fail",
+  //   data: {
+  //     message: `Cant find the URL ${req.originalUrl} on the server`,
+  //   },
+  // });
+  const err = new Error(`Cant find the URL ${req.originalUrl} on the server`)
+  err.status = "fail"
+  err.statusCode = 404
+  next(err);
 });
+
+// GLOBAL ERROR HANDLNG
+app.use((error, req, res, next) => {
+  error.statusCode = error.statusCode || 500
+  error.status = error.status || "error"
+  res.status(error.statusCode).json({
+    status: error.statusCode,
+    message: error.message
+  })
+})
 //   server
 app.listen(8080, () => {
   console.log("Server in running");
