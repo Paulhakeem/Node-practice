@@ -60,14 +60,6 @@ movieSchema.pre("save", function (next) {
   this.createdBy = "Hakeem Paul";
   next();
 });
-// using of post method as a middleware after save
-// movieSchema.post("save", function (doc, next) {
-//   const content = `A new movie document created with name ${doc.name} by ${doc.createdBy}`;
-//   fs.writeFileSync("./marbel/logs/post.txt", content, { flag: "a" }, (err) => {
-//     console.log(err.message);
-//   });
-//   next();
-// });
 // CRATING A MIDDLEWARE BEFORE FINDING A MOVIE
 movieSchema.pre(/^find/, function (next) {
   this.find({ rating: { $gt:  1} });
