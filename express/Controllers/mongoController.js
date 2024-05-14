@@ -2,6 +2,7 @@
 const Movie = require("./../../model/movies");
 const queryFeatures = require("./../../utils/queryFeatures");
 const asyncErrorHandling = require("./../error/asynError");
+const ErrorHandling = require("./../error/errorHanding")
 
 // GET METHOD
 
@@ -35,6 +36,10 @@ exports.getAllMovies = asyncErrorHandling(async (req, res, next) => {
 // GET METHOD
 exports.getMovie = asyncErrorHandling(async (req, res, next) => {
   let movie = await Movie.findById(req.params.id);
+  if (!movie) {
+    const err = new ErrorHandling(`Cant find the movie ID on the server`, 404)
+    return next(err);
+  }
   res.status(200).json({
     status: "sucess",
     data: {
@@ -62,6 +67,10 @@ exports.updateMovie = asyncErrorHandling(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!movieUpdate) {
+    const err = new ErrorHandling(`Cant find the movie ID on the server`, 404)
+    return next(err);
+  }
   res.status(200).json({
     status: "sucess",
     data: {
@@ -72,7 +81,11 @@ exports.updateMovie = asyncErrorHandling(async (req, res, next) => {
 
 // DeleTe method
 exports.deleteMovie = asyncErrorHandling(async (req, res, next) => {
-  await Movie.findByIdAndDelete(req.params.id);
+ const deleteMovie = await Movie.findByIdAndDelete(req.params.id);
+ if (!deleteMovie) {
+  const err = new ErrorHandling(`Cant find the movie ID on the server`, 404)
+  return next(err);
+}
   res.status(204).json({
     status: "sucess",
     data: null,
