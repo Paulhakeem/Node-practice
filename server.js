@@ -14,6 +14,7 @@ app.use(express.static("./public"));
 app.use(morgan("dev")); // middleware
 
 // connecting node with mongodb database
+console.log(process.env.NODE_ENV);
 mongoose
   .connect(process.env.CONNECTION_STR, {})
   .then((conn) => {
