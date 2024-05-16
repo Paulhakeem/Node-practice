@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema(
     },
     descrption: {
       type:String,
-      validate: [validator.isAlpha, 'description should only contains alphabets']
+      // validate: [validator.isAlpha, 'description should only contains alphabets']
     },
     duration: {
        type: Number, 

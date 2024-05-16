@@ -29,6 +29,13 @@ const castErrorHandle = (err) => {
   const msg = `Invalid value ${err.value} for filed ${err.path}`;
   return new ErrorHandling(msg, 404);
 };
+// dublicated error handling
+const dublicatedError = (err)=> {
+  const name = err.keyValue.name
+  const message = `${name} is dublicated. Please use another name`
+  console.log(name);
+  return new ErrorHandling(message, 404)
+}
 
 module.exports = (error, req, res, next) => {
   error.statusCode = error.statusCode || 500;
@@ -40,7 +47,7 @@ module.exports = (error, req, res, next) => {
     if (error.name === "CastError") {
         error = castErrorHandle(error);
         console.log('hello');
-    }
+    }else if(error.code === 11000) error = dublicatedError(error)
     prodError(res, error);
   }
   next();
