@@ -13,17 +13,12 @@ app.use(express.json()); // middleware
 app.use(express.static("./public"));
 app.use(morgan("dev")); // middleware
 
-// connecting node with mongodb database
-console.log(process.env.NODE_ENV);
+// connecting node with mongodb da
 mongoose
   .connect(process.env.CONNECTION_STR, {})
   .then((conn) => {
     console.log("connection successful!!");
   })
-  .catch((err) => {
-    console.log("error");
-  });
-
 // save to database
 
 // ROUTERS
@@ -45,6 +40,14 @@ app.all("*", (req, res, next) => {
 // GLOBAL ERROR HANDLNG
 app.use(globalError)
 //   server
-app.listen(8080, () => {
+const server = app.listen(8080, () => {
   console.log("Server in running");
 });
+// hundle rejected promises globally
+process.on("unhandledRejection", (err)=> {
+  console.log(err.name, err.message);
+  console.log("server shuting down...");
+  server.close(()=> {
+    process.exit(1)
+  })
+})
