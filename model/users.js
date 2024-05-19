@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const { validate } = require("./movies");
+const bcrypt = require('bcryptjs')
 
 // user schem
 const userSchema = new mongoose.Schema({
@@ -10,21 +10,36 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    unique: true,
+    lowercase: true,
     required: [true, "Please enter your email address."],
-    validator: [validator.isEmail],
+    validate: [validator.isEmail],
   },
   password:{
     type: String,
     required: [true, "Please enter your password"],
-    maxLength: [8, "Password shuld be of 8 characters"],
-    validator: [validator.isStrongPassword]
+    miniLength: [8, "Password shuld be of 8 characters"],
   },
   confirmPassword: {
     type: String,
-    require: [true, "Please confirm your password"]
+    require: [true, "Please confirm your password"],
+    validate: {
+      validator: function(val){
+        return val == this.password
+       },
+       message: "Confirm password does not match!."
+    }
   }
 
 });
+
+// encypt password
+userSchema.pre("save", async function(next){
+// encypt password before saving it
+    this.password = await bcrypt.hash(this.password, 12)
+    this.confirmPassword = undefined
+    next()
+})
 
 // model
 const User = mongoose.model('User', userSchema)
