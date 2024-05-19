@@ -32,7 +32,6 @@ exports.getAllMovies = asyncErrorHandling(async (req, res, next) => {
     },
   });
 });
-
 // GET METHOD
 exports.getMovie = asyncErrorHandling(async (req, res, next) => {
   let movie = await Movie.findById(req.params.id);
