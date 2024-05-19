@@ -1,7 +1,8 @@
 // modules
 const env = require("dotenv");
 const mongoose = require("mongoose");
-const movieRouter = require("./express/movieRoute/route"); // modules
+const movieRouter = require("./express/movieRoute/route");
+const userAuthRouter = require("./express/movieRoute/userAuth")
 const ErrorHandling = require("./express/error/errorHanding")
 const globalError = require("./express/error/errorController")
 const morgan = require("morgan"); // modules
@@ -23,6 +24,7 @@ mongoose
 
 // ROUTERS
 app.use("/api/v1/movies", movieRouter); // CREATING route
+app.use("/api/v1/users", userAuthRouter);
 // ERROR HANDLING ROUTE
 app.all("*", (req, res, next) => {
   // res.status(404).json({
