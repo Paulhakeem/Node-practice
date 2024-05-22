@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your password"],
     miniLength: [8, "Password shuld be of 8 characters"],
+    select: false
   },
   confirmPassword: {
     type: String,
@@ -28,7 +29,8 @@ const userSchema = new mongoose.Schema({
         return val == this.password
        },
        message: "Confirm password does not match!."
-    }
+    },
+    select: false
   }
 
 });
