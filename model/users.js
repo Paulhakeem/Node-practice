@@ -43,6 +43,11 @@ userSchema.pre("save", async function(next){
     next()
 })
 
+// compare password wit db password
+userSchema.methods.comparePasswordInDB = async function(pswd, pswdDB){
+  return await bcrypt.compare(pswd, pswdDB)
+}
+
 // model
 const User = mongoose.model('User', userSchema)
 
