@@ -49,3 +49,20 @@ exports.login = asyncErrorHandling(async(req, res, next)=> {
         loginUser
     })
 })
+
+// protecting routes
+exports.protectRoutes = asyncErrorHandling(async(req,res,next)=> {
+    // Read user token
+  const userToken = req.headers.authorization
+  let token;
+  if(userToken && userToken.startsWith("paul")){
+    token = userToken.split(" ")
+  }
+  console.log(token);
+    // validate tokens
+
+    // if user change the password 
+
+    // allow user to access the route
+    next()
+})

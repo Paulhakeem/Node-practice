@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoContollers = require("./../Controllers/mongoController");
+const usersController = require('./../Controllers/usersControllers')
 
 const router = express.Router();
 
@@ -7,14 +8,14 @@ const router = express.Router();
 // Middleware route
 router
   .route("/high-rated-movies")
-  .get(mongoContollers.highRatedMovies, mongoContollers.getAllMovies);
+  .get(mongoContollers.getAllMovies);
 
   // aggrigation route
   router.route("/movie-stats").get(mongoContollers.getAggrigates)
 
 router
   .route("/")
-  .get(mongoContollers.getAllMovies)
+  .get(usersController.protectRoutes,mongoContollers.getAllMovies)
   .post(mongoContollers.createMovie);
 
 router
