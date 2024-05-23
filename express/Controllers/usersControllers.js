@@ -35,9 +35,9 @@ exports.login = asyncErrorHandling(async(req, res, next)=> {
 
     // check the user info & filter
     const loginUser = await Users.findOne({email}).select("+password")
-    // const isMatch = await loginUser.comparePasswordInDB(password, loginUser.password)
+    const isMatch = await loginUser.comparePasswordInDB(password, loginUser.password)
     // check user
-    if(!loginUser || !(await loginUser.comparePasswordInDB(password, loginUser.password))){
+    if(!loginUser || !isMatch){
         const userError = new ErrorHandling("Incorrect Email or Password", 400)
         return next(userError)
     }
