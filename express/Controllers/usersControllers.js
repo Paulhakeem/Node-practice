@@ -3,6 +3,7 @@ const asyncErrorHandling = require("./../error/asynError");
 const ErrorHandling = require("./../error/errorHanding");
 const errorHandling = require('./../error/errorHanding')
 const jwt = require('jsonwebtoken')
+const util = require("util")
 
 // function handling user
 const userTokens = (id)=>{
@@ -56,10 +57,15 @@ exports.protectRoutes = asyncErrorHandling(async(req,res,next)=> {
   const userToken = req.headers.authorization
   let token;
   if(userToken && userToken.startsWith("paul")){
-    token = userToken.split(" ")
+    token = userToken.split(" ")[1]
   }
-  console.log(token);
+  if(!token){
+    const error = errorHandling("Invalid token", 401)
+    next(error)
+  }
     // validate tokens
+   const promiseToken = await util.promisify(jwt.verify)(token, process.env.SECRET_STR)
+   console.log(promiseToken);
 
     // if user change the password 
 
