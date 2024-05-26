@@ -106,5 +106,6 @@ exports.userRestriction = (rule)=>{
     const error = new errorHandling('You do not have permission to delete this date', 403)
     next(error)
   } 
+  next()
     }
 }
