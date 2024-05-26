@@ -22,6 +22,6 @@ router
   .route("/:id")
   .get(mongoContollers.getMovie)
   .patch(mongoContollers.updateMovie)
-  .delete(mongoContollers.deleteMovie);
+  .delete(usersController.protectRoutes, usersController.userRestriction('admin'), mongoContollers.deleteMovie);
 
 module.exports = router;

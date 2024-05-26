@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
   passwordChangeAt: Date,
+  rule: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  }
 });
 
 // encrypt password

@@ -15,10 +15,10 @@ const userTokens = (id) => {
 //create a new user / post request
 exports.createUser = asyncErrorHandling(async (req, res, next) => {
   const newUser = await Users.create(req.body);
-  const userCredentials = userTokens(newUser._id);
+  const userToken = userTokens(newUser._id);
   res.status(201).json({
     status: "success",
-    userCredentials,
+    userToken,
     data: {
       user: newUser,
     },
@@ -54,7 +54,6 @@ exports.login = asyncErrorHandling(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     tokens,
-    loginUser,
   });
 });
 
@@ -62,31 +61,50 @@ exports.login = asyncErrorHandling(async (req, res, next) => {
 exports.protectRoutes = asyncErrorHandling(async (req, res, next) => {
   // Read user token
   const userToken = req.headers.authorization;
-  let token;
-  if (userToken && userToken.startsWith("paul")) {
-    token = userToken.split(" ")[1];
+  let tokens;
+  if (userToken && userToken.startsWith("Bearer")) {
+    tokens = userToken.split(" ")[1];
   }
-  if (!token) {
+  if (!tokens) {
     const error = errorHandling("Invalid token", 401);
-    next(error);
+    next(error)
   }
   // validate tokens
   const promiseToken = await util.promisify(jwt.verify)(
-    token,
+    tokens,
     process.env.SECRET_STR
   );
   // if user exist
   const userExist = await User.findById(promiseToken.id);
-if(!userExist){
-    const error = new errorHandling("User does not exist!. Please check your email and password", 401)
-    next(error)
-}
+  if (!userExist) {
+    const error = new errorHandling(
+      "User does not exist!. Please check your email and password",
+      401
+    );
+    next(error);
+  }
   // if user change the password
-  if(userExist.isPasswordChanged(promiseToken.iat)){
-    const error = new errorHandling("The password has been change!, Please login again", 401)
-    next(error)
+  const passwordChanged = await userExist.isPasswordChanged(promiseToken.iat);
+  if (passwordChanged) {
+    const error = new errorHandling(
+      "The password has been change!, Please login again",
+      401
+    );
+    next(error);
   }
 
   // allow user to access the route
+  req.userExist = userExist
   next();
 });
+
+
+// user Restrictions
+exports.userRestriction = (rule)=>{
+    return (req, res, next)=> {
+  if(req.userExist.rule !== rule){
+    const error = new errorHandling('You do not have permission to delete this date', 403)
+    next(error)
+  } 
+    }
+}
