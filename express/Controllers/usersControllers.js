@@ -67,7 +67,7 @@ exports.protectRoutes = asyncErrorHandling(async (req, res, next) => {
   }
   if (!tokens) {
     const error = errorHandling("Invalid token", 401);
-    next(error)
+    next(error);
   }
   // validate tokens
   const promiseToken = await util.promisify(jwt.verify)(
@@ -94,18 +94,40 @@ exports.protectRoutes = asyncErrorHandling(async (req, res, next) => {
   }
 
   // allow user to access the route
-  req.userExist = userExist
+  req.userExist = userExist;
   next();
 });
 
-
 // user Restrictions
-exports.userRestriction = (rule)=>{
-    return (req, res, next)=> {
-  if(req.userExist.rule !== rule){
-    const error = new errorHandling('You do not have permission to delete this date', 403)
-    next(error)
-  } 
-  next()
+exports.userRestriction = (rule) => {
+  return (req, res, next) => {
+    if (req.userExist.rule !== rule) {
+      const error = new errorHandling(
+        "You do not have permission to delete this date",
+        403
+      );
+      next(error);
     }
-}
+    next();
+  };
+};
+
+// forget password
+exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
+  // GET BASED POST EMAIL
+  const userEmail = User.findOne({ email: req.body.email });
+  if (!userEmail) {
+    const error = new errorHandling("Email not found in the database", 404);
+    next(error);
+  }
+
+  // GENERATE RANDOM TOKEN
+  const resetToken = userEmail.resetPasswordToken();
+
+  await userEmail.save({ validateBeforeSave: false });
+
+  next();
+});
+
+// reset password
+exports.resetPassword = async (req, res, nex) => {};
