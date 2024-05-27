@@ -122,7 +122,7 @@ exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   }
 
   // GENERATE RANDOM TOKEN
-  const resetToken = userEmail.resetPasswordToken();
+  const resetToken = userEmail.createResetPasswordToken();
 
   await userEmail.save({ validateBeforeSave: false });
 
