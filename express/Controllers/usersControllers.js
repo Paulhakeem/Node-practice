@@ -115,14 +115,14 @@ exports.userRestriction = (rule) => {
 // forget password
 exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   // GET BASED POST EMAIL
-  const userEmail = User.findOne({ email: req.body.email });
+  const userEmail = await User.findOne({ email: req.body.email });
   if (!userEmail) {
     const error = new errorHandling("Email not found in the database", 404);
     next(error);
   }
 
-  // GENERATE RANDOM TOKEN
-  const resetToken = userEmail.createResetPasswordToken();
+//   // GENERATE RANDOM  
+  const randomToken = userEmail.resetPasswordToken();
 
   await userEmail.save({ validateBeforeSave: false });
 

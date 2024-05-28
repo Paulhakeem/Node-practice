@@ -74,12 +74,12 @@ userSchema.methods.isPasswordChanged = async function (JWTtimeStamp) {
 };
 
 // GENERATE RANDOM TOKEN
-userSchema.methods.resetPasswordToken = function(){
+userSchema.methods.resetPasswordToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
   this.passwordResetToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(resetToken)
-    .digest("hex");
+    .digest('hex');
   // time to miliseconds = 10min
   this.passwordResetTokenExp = Date.now() + 10 * 60 * 1000;
 
