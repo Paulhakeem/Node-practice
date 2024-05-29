@@ -5,6 +5,7 @@ const ErrorHandling = require("./../error/errorHanding");
 const errorHandling = require("./../error/errorHanding");
 const jwt = require("jsonwebtoken");
 const util = require("util");
+const sendEmail = require("./../email/nodemailer");
 
 // function handling user
 const userTokens = (id) => {
@@ -114,18 +115,42 @@ exports.userRestriction = (rule) => {
 
 // forget password
 exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
-  // GET BASED POST EMAIL
+  // 1: GET USER POST EMAIL
   const userEmail = await User.findOne({ email: req.body.email });
   if (!userEmail) {
     const error = new errorHandling("Email not found in the database", 404);
     next(error);
   }
 
-//   // GENERATE RANDOM  
+  //2: GENERATE RANDOM
   const randomToken = userEmail.resetPasswordToken();
 
-  await userEmail.save({ validateBeforeSave: false });
+//   await userEmail.save({ validateBeforeSave: false });
 
+  //  3: SEND THE RESET TOKEN TO USER EMAIL
+  const resetURl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/users/resetpassword/${randomToken}`;
+  const message = `We have received a password reset request. Please use the below link to reset your password\n\n${resetURl}\n\nLink expires in 10min.`;
+
+  try {
+    await sendEmail({
+      email: userEmail.email,
+      subject: "password change request",
+      message: message,
+    });
+    res.status(200).json({
+        status: "sucess",
+        message: "Password resent Email sent to the user"
+      })
+  } catch (error) {
+    (userEmail.resetPasswordToken = undefined),
+      (userEmail.passwordResetTokenExp = undefined);
+
+    userEmail.save({ validateBeforeSave: false });
+
+    return next(new errorHandling("Email Not Sent!!", 500));
+  }
   next();
 });
 
