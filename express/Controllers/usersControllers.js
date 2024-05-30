@@ -117,13 +117,16 @@ exports.userRestriction = (rule) => {
 exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   // 1: GET USER POST EMAIL
   const userEmail = await User.findOne({ email: req.body.email });
+  console.log(userEmail);
+
   if (!userEmail) {
     const error = new errorHandling("Email not found in the database", 404);
-    next(error);
+    next(error)
   }
 
   //2: GENERATE RANDOM
   const randomToken = await userEmail.resetPasswordToken();
+  await userEmail.save();
 
   //  3: SEND THE RESET TOKEN TO USER EMAIL
   const resetURl = `${req.protocol}://${req.get(
@@ -149,7 +152,7 @@ exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
 
     return next(new errorHandling("Email Not Sent!!", 500));
   }
-  next();
+//   next();
 });
 
 // reset password
