@@ -182,7 +182,7 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
   // saving the data
   user.save();
   // LOGIN THE USER AFTER CHANGE A PASSWORD
-  const loginToken = userTokens(loginUser._id);
+  const loginToken = userTokens(user._id);
 
   res.status(200).json({
     status: "success",
