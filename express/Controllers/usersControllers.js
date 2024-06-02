@@ -6,6 +6,7 @@ const errorHandling = require("./../error/errorHanding");
 const jwt = require("jsonwebtoken");
 const util = require("util");
 const sendEmail = require("./../email/nodemailer");
+const crypto = require("crypto");
 
 // function handling user
 const userTokens = (id) => {
@@ -117,16 +118,15 @@ exports.userRestriction = (rule) => {
 exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   // 1: GET USER POST EMAIL
   const userEmail = await User.findOne({ email: req.body.email });
-  console.log(userEmail);
 
   if (!userEmail) {
     const error = new errorHandling("Email not found in the database", 404);
-    next(error)
+    next(error); 
   }
 
   //2: GENERATE RANDOM
-  const randomToken = await userEmail.resetPasswordToken();
-  await userEmail.save();
+  const randomToken = await userEmail.createResetPasswordToken();
+  await userEmail.save({ validateBeforeSave: false });
 
   //  3: SEND THE RESET TOKEN TO USER EMAIL
   const resetURl = `${req.protocol}://${req.get(
@@ -145,15 +145,18 @@ exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
       message: "Password resent Email sent to the user",
     });
   } catch (error) {
-    (userEmail.resetPasswordToken = undefined),
-      (userEmail.passwordResetTokenExp = undefined);
-
+    userEmail.resetPasswordToken = undefined;
+    userEmail.passwordResetTokenExp = undefined;
     userEmail.save({ validateBeforeSave: false });
 
     return next(new errorHandling("Email Not Sent!!", 500));
   }
-//   next();
+  //   next();
 });
 
 // reset password
-exports.resetPassword = async (req, res, nex) => {};
+exports.resetPassword = async (req, res, nex) => {
+  const token  = crypto.createHash('sha256').update(req.params.token).digest('hex')
+
+  User.findOne({passwordResetToken: token})
+};
