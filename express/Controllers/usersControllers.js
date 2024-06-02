@@ -114,14 +114,14 @@ exports.userRestriction = (rule) => {
   };
 };
 
-// forget password
+// FORGETING PASSWORD
 exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   // 1: GET USER POST EMAIL
   const userEmail = await User.findOne({ email: req.body.email });
 
   if (!userEmail) {
     const error = new errorHandling("Email not found in the database", 404);
-    next(error); 
+    next(error);
   }
 
   //2: GENERATE RANDOM
@@ -154,9 +154,38 @@ exports.forgetPassword = asyncErrorHandling(async (req, res, next) => {
   //   next();
 });
 
-// reset password
-exports.resetPassword = async (req, res, nex) => {
-  const token  = crypto.createHash('sha256').update(req.params.token).digest('hex')
+// RESET PASSWORD
+exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
+  // IF USER EXIST WITH THE GIVEN TOKEN AND TOKEN HAS NOT EXPIRED
+  const token = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetTokenExp: { $gt: Date.now() },
+  });
 
-  User.findOne({passwordResetToken: token})
-};
+  if (!user) {
+    const error = new ErrorHandling("The token is invalid or expired", 400);
+    next(error);
+  }
+
+  // REESETING USER PASSWORD
+  user.password = req.body.password;
+  user.confirmPassword = req.body.confirmPassword;
+
+  user.passwordResetToken = undefined;
+  user.passwordResetTokenExp = undefined;
+  user.passwordChangeAt = Date.now();
+
+  // saving the data
+  user.save();
+  // LOGIN THE USER AFTER CHANGE A PASSWORD
+  const loginToken = userTokens(loginUser._id);
+
+  res.status(200).json({
+    status: "success",
+    token: loginToken,
+  });
+});
