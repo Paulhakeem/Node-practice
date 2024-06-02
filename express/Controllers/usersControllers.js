@@ -186,6 +186,8 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    token: loginToken,
+    data: {
+      token: loginToken,
+    },
   });
 });
