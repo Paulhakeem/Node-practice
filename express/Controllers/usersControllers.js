@@ -191,3 +191,12 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
     },
   });
 });
+
+// UPDATING PASSWORD
+exports.updatePassword = async(req, res, next)=> {
+  // GET USER FROM DB
+  const user = await User.findOne(req.user._id).select("+password")
+  // CHECK IF CURRENT PASSWORD IS CORRECT
+  // IF IS CORRECT UPDATE USER PASSWORD WITH NEW VALUE
+  // LOGIN USER
+}
