@@ -68,7 +68,7 @@ exports.protectRoutes = asyncErrorHandling(async (req, res, next) => {
     tokens = userToken.split(" ")[1];
   }
   if (!tokens) {
-    const error = errorHandling("Invalid token", 401);
+    const error = new errorHandling("Invalid token", 401);
     next(error);
   }
   // validate tokens
@@ -193,10 +193,28 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
 });
 
 // UPDATING PASSWORD
-exports.updatePassword = async(req, res, next)=> {
+exports.updatePassword = async (req, res, next) => {
   // GET USER FROM DB
-  const user = await User.findOne(req.user._id).select("+password")
+  const user = await User.findOne(req.user._id).select("+password");
   // CHECK IF CURRENT PASSWORD IS CORRECT
+  if (
+    !(await user.comparePasswordInDB(req.body.currentPassword, user.password))
+  ) {
+    return next(new errorHandling("The current password you provide is wrong", 401))
+  }
   // IF IS CORRECT UPDATE USER PASSWORD WITH NEW VALUE
+  user.password = req.body.password;
+  user.confirmPassword = req.body.confirmPassword;
+
+  await user.save();
   // LOGIN USER
-}
+  const token = userTokens(user._id);
+
+  req.status(200).json({
+    status: "sucess",
+    token,
+    data: {
+      user,
+    },
+  });
+};

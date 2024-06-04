@@ -7,5 +7,6 @@ router.route("/signup").post(usersController.createUser)
 router.route("/login").post(usersController.login)
 router.route("/forgetpassword").post(usersController.forgetPassword)
 router.route("/resetpassword/:token").patch(usersController.resetPassword)
+router.route("/updatepassword").patch(usersController.protectRoutes, usersController.updatePassword)
 
 module.exports = router
