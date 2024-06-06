@@ -14,6 +14,18 @@ const userTokens = (id) => {
     expiresIn: process.env.EXP_DATE,
   });
 };
+
+// reusable function
+const createSendResponse = (user, statusCode, res) => {
+  const token = userTokens(user._id);
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      User,
+    },
+  });
+};
 //create a new user / post request
 exports.createUser = asyncErrorHandling(async (req, res, next) => {
   const newUser = await Users.create(req.body);
@@ -200,7 +212,9 @@ exports.updatePassword = async (req, res, next) => {
   if (
     !(await user.comparePasswordInDB(req.body.currentPassword, user.password))
   ) {
-    return next(new errorHandling("The current password you provide is wrong", 401))
+    return next(
+      new errorHandling("The current password you provide is wrong", 401)
+    );
   }
   // IF IS CORRECT UPDATE USER PASSWORD WITH NEW VALUE
   user.password = req.body.password;
