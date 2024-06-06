@@ -29,14 +29,7 @@ const createSendResponse = (user, statusCode, res) => {
 //create a new user / post request
 exports.createUser = asyncErrorHandling(async (req, res, next) => {
   const newUser = await Users.create(req.body);
-  const userToken = userTokens(newUser._id);
-  res.status(201).json({
-    status: "success",
-    userToken,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendResponse(newUser, 201, res)
   next();
 });
 
@@ -63,12 +56,12 @@ exports.login = asyncErrorHandling(async (req, res, next) => {
     const userError = new ErrorHandling("Incorrect Email or Password", 400);
     return next(userError);
   }
-  const tokens = userTokens(loginUser._id);
+  createSendResponse(loginUser, 200, res)
 
-  res.status(200).json({
-    status: "success",
-    tokens,
-  });
+  // res.status(200).json({
+  //   status: "success",
+  //   tokens,
+  // });
 });
 
 // protecting routes
