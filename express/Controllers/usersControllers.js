@@ -187,14 +187,7 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
   // saving the data
   user.save();
   // LOGIN THE USER AFTER CHANGE A PASSWORD
-  const loginToken = userTokens(user._id);
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      token: loginToken,
-    },
-  });
+  createSendResponse(user, 200, res)
 });
 
 // UPDATING PASSWORD
@@ -215,13 +208,5 @@ exports.updatePassword = async (req, res, next) => {
 
   await user.save();
   // LOGIN USER
-  const token = userTokens(user._id);
-
-  req.status(200).json({
-    status: "sucess",
-    token,
-    data: {
-      user,
-    },
-  });
+  createSendResponse(user, 200, res)
 };
