@@ -5,7 +5,11 @@ const express = require("express");
 const router = express.Router();
 
 router
-  .route("/userUpdate")
+  .route("/updatePassword")
   .patch(usersController.protectRoutes, updateUser.updatePassword);
+
+  router
+  .route("/updateMe")
+  .patch(usersController.protectRoutes, updateUser.updateMe);
 
 module.exports = router;
