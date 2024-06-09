@@ -18,6 +18,18 @@ const userTokens = (id) => {
 // reusable function
 const createSendResponse = (user, statusCode, res) => {
   const token = userTokens(user._id);
+  // create cookie for token
+  const options = {
+    maxAge: process.env.EXP_DATE,
+    httpOnly: true,
+  };
+
+  if ((process.env.NODE_ENV = "production")) {
+    options.secure = true;
+  }
+  user.password = undefined;
+
+  res.cookie("jwt", token, options);
   res.status(statusCode).json({
     status: "success",
     token,
@@ -26,10 +38,13 @@ const createSendResponse = (user, statusCode, res) => {
     },
   });
 };
+
+
 //create a new user / post request
 exports.createUser = asyncErrorHandling(async (req, res, next) => {
   const newUser = await Users.create(req.body);
-  createSendResponse(newUser, 201, res)
+  console.log(newUser);
+  createSendResponse(newUser, 201, res);
   next();
 });
 
@@ -56,7 +71,7 @@ exports.login = asyncErrorHandling(async (req, res, next) => {
     const userError = new ErrorHandling("Incorrect Email or Password", 400);
     return next(userError);
   }
-  createSendResponse(loginUser, 200, res)
+  createSendResponse(loginUser, 200, res);
 
   // res.status(200).json({
   //   status: "success",
@@ -187,7 +202,5 @@ exports.resetPassword = asyncErrorHandling(async (req, res, next) => {
   // saving the data
   user.save();
   // LOGIN THE USER AFTER CHANGE A PASSWORD
-  createSendResponse(user, 200, res)
+  createSendResponse(user, 200, res);
 });
-
-
