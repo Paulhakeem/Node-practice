@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+
+  active: {
+    type: Boolean,
+    default: true
+  },
 });
 
 // encrypt password
@@ -49,6 +54,12 @@ userSchema.pre("save", async function (next) {
   this.confirmPassword = undefined;
   next();
 });
+
+// get users
+userSchema.pre(/^find/, function(next){
+  this.find({active: true})
+  next()
+})
 
 // compare password wit db password
 userSchema.methods.comparePasswordInDB = async function (pswd, pswdDB) {

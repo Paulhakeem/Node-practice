@@ -11,13 +11,23 @@ const userControler = require("./usersControllers");
 const filterObj = (Obj, ...alowedFields) => {
   const newObj = {};
   Object.keys(Obj).forEach((prop) => {
-    if (alowedFields.includes(prop))
-      newObj[prop] = Obj[prop];
+    if (alowedFields.includes(prop)) newObj[prop] = Obj[prop];
   });
 
-  return newObj
+  return newObj;
 };
 
+// GET ALL USERS 
+exports.getAllUsers = asyncErrorHandling(async(req, res, next) => {
+    const users = await Users.find()
+    res.status(200).json({
+        status: "success", 
+        users: users.length,
+        data: {
+            users
+        }
+    })
+})
 // UPDATING PASSWORD
 exports.updatePassword = async (req, res, next) => {
   // GET USER FROM DB
@@ -49,9 +59,16 @@ exports.updateMe = asyncErrorHandling(async (req, res, next) => {
     );
     return next(error);
   }
- const requiredObj = filterObj(req.body, "name", "email")
-  const user = await User.findByIdAndUpdate(req.user._id, requiredObj, {
+  const requiredObj = filterObj(req.body, "name", "email");
+  const user = await User.findByIdAndUpdate(req.user.id, requiredObj, {
     runValidators: true,
     new: true,
   });
+
+  userControler.createSendResponse(user, 200, res);
+});
+
+// DELETE A USER
+exports.deleteMe = asyncErrorHandling(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
 });
