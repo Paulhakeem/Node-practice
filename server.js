@@ -8,12 +8,22 @@ const globalError = require("./express/error/errorController")
 const updateUser = require("./express/movieRoute/updateUser")
 const morgan = require("morgan"); // modules
 const express = require("express");
+const limitReq = require("express-rate-limit")
+
 let app = express();
+
+  // LIMIT REQUEST TO APIs
+let limitRequest = limitReq({
+  max: 1000,
+  windowsMs: 60 * 60 * 1000,
+  message: "We have receive to many request from this IP. Please try again later"
+})
 
 env.config({ path: "./config.env" });
 app.use(express.json()); // middleware
 app.use(express.static("./public"));
 app.use(morgan("dev")); // middleware
+app.use("/api", limitRequest)
 
 // connecting node with mongodb da
 mongoose
@@ -21,6 +31,7 @@ mongoose
   .then((conn) => {
     console.log("connection successful!!");
   })
+
 // save to database
 
 // ROUTERS
