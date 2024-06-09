@@ -5,6 +5,7 @@ const movieRouter = require("./express/movieRoute/route");
 const userAuthRouter = require("./express/movieRoute/userAuth")
 const ErrorHandling = require("./express/error/errorHanding")
 const globalError = require("./express/error/errorController")
+const updateUser = require("./express/movieRoute/updateUser")
 const morgan = require("morgan"); // modules
 const express = require("express");
 let app = express();
@@ -25,6 +26,7 @@ mongoose
 // ROUTERS
 app.use("/api/v1/movies", movieRouter); // CREATING route
 app.use("/api/v1/users", userAuthRouter);
+app.use("/api/v1/update", updateUser);
 // ERROR HANDLING ROUTE
 app.all("*", (req, res, next) => {
   // res.status(404).json({
