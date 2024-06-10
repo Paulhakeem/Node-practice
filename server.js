@@ -9,6 +9,7 @@ const updateUser = require("./express/movieRoute/updateUser")
 const morgan = require("morgan"); // modules
 const express = require("express");
 const limitReq = require("express-rate-limit")
+const helmet = require("helmet")
 
 let app = express();
 
@@ -20,6 +21,8 @@ let limitRequest = limitReq({
 })
 
 env.config({ path: "./config.env" });
+
+app.use(helmet()) // setting up security headers
 app.use(express.json()); // middleware
 app.use(express.static("./public"));
 app.use(morgan("dev")); // middleware
