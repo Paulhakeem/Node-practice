@@ -10,6 +10,8 @@ const morgan = require("morgan"); // modules
 const express = require("express");
 const limitReq = require("express-rate-limit")
 const helmet = require("helmet")
+const sanitize = require("express-mongo-sanitize")
+const xss = require("xss-clean")
 
 let app = express();
 
@@ -24,9 +26,12 @@ env.config({ path: "./config.env" });
 
 app.use(helmet()) // setting up security headers
 app.use(express.json()); // middleware
+app.use(sanitize())
+app.use(xss())
 app.use(express.static("./public"));
 app.use(morgan("dev")); // middleware
 app.use("/api", limitRequest)
+
 
 // connecting node with mongodb da
 mongoose
