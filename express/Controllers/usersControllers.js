@@ -39,7 +39,6 @@ const createSendResponse = (user, statusCode, res) => {
   });
 };
 
-
 //create a new user / post request
 exports.createUser = asyncErrorHandling(async (req, res, next) => {
   const newUser = await Users.create(req.body);
@@ -50,7 +49,7 @@ exports.createUser = asyncErrorHandling(async (req, res, next) => {
 
 // login user
 exports.login = asyncErrorHandling(async (req, res, next) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
   // check if user provide the above info
   if (!email || !password) {
     const error = new errorHandling(
@@ -72,11 +71,6 @@ exports.login = asyncErrorHandling(async (req, res, next) => {
     return next(userError);
   }
   createSendResponse(loginUser, 200, res);
-
-  // res.status(200).json({
-  //   status: "success",
-  //   tokens,
-  // });
 });
 
 // protecting routes
